@@ -20,6 +20,72 @@ const sampleQuiz = [
     ],
     answerIndex: 1,
   },
+  {
+    id: 3,
+    q: "Trong kinh tế số, cơ sở hạ tầng (CSHT) bao gồm yếu tố nào?",
+    options: [
+      "Chỉ bao gồm Internet và máy tính",
+      "Nền tảng công nghệ, sàn TMĐT, hệ thống logistics và fintech",
+      "Chỉ có luật pháp và chính sách",
+      "Chỉ có văn hóa và đạo đức xã hội",
+    ],
+    answerIndex: 1,
+  },
+  {
+    id: 4,
+    q: "Kiến trúc thượng tầng (KTTT) trong kinh tế số thể hiện qua?",
+    options: [
+      "Chỉ có công nghệ và phần mềm",
+      "Luật TMĐT, chính sách chuyển đổi số, đạo đức kinh doanh số",
+      "Chỉ có máy móc và thiết bị",
+      "Chỉ có mạng Internet",
+    ],
+    answerIndex: 1,
+  },
+  {
+    id: 5,
+    q: "Mối quan hệ giữa CSHT và KTTT trong kinh tế số là?",
+    options: [
+      "CSHT hoàn toàn quyết định KTTT",
+      "KTTT hoàn toàn độc lập với CSHT",
+      "Mối quan hệ hai chiều, tương tác biện chứng",
+      "Không có mối quan hệ gì với nhau",
+    ],
+    answerIndex: 2,
+  },
+  {
+    id: 6,
+    q: "Ví dụ nào thể hiện KTTT tác động ngược lại CSHT?",
+    options: [
+      "Shopee ra đời làm thay đổi thói quen mua sắm",
+      "Chiến lược chuyển đổi số thúc đẩy phát triển hạ tầng công nghệ",
+      "Ví MoMo xuất hiện do nhu cầu thanh toán",
+      "Grab phát triển do giao thông đô thị khó khăn",
+    ],
+    answerIndex: 1,
+  },
+  {
+    id: 7,
+    q: "Tại sao cần sự đồng bộ giữa CSHT và KTTT trong kinh tế số?",
+    options: [
+      "Để tăng lợi nhuận cho doanh nghiệp",
+      "Để phát triển bền vững và hiệu quả",
+      "Để hạn chế cạnh tranh",
+      "Để giảm chi phí đầu tư",
+    ],
+    answerIndex: 1,
+  },
+  {
+    id: 8,
+    q: "Sinh viên tham gia kinh tế số cần lưu ý điều gì?",
+    options: [
+      "Chỉ cần biết sử dụng công nghệ",
+      "An toàn số, tham gia có trách nhiệm, phát triển kỹ năng",
+      "Chỉ cần mua sắm online nhiều",
+      "Không cần quan tâm đến pháp luật",
+    ],
+    answerIndex: 1,
+  },
 ]
 
 const initialPoll = {
@@ -40,6 +106,7 @@ export default function KinhTeSoPresentation() {
   const [section, setSection] = useState("home")
   const [quizIndex, setQuizIndex] = useState(0)
   const [quizAnswers, setQuizAnswers] = useState({})
+  const [answeredQuestions, setAnsweredQuestions] = useState({})
   const [poll, setPoll] = useState(initialPoll)
   const [voted, setVoted] = useState(false)
   const [survey, setSurvey] = useState({ "Mua online": 0, "Dùng ví điện tử": 0, "Chưa quen": 0 })
@@ -78,6 +145,7 @@ export default function KinhTeSoPresentation() {
 
   function handleQuizSelect(qid, optIndex) {
     setQuizAnswers((prev) => ({ ...prev, [qid]: optIndex }))
+    setAnsweredQuestions((prev) => ({ ...prev, [qid]: true }))
   }
   function submitQuiz() {
     const results = sampleQuiz.map((q) => ({
@@ -124,6 +192,40 @@ export default function KinhTeSoPresentation() {
     alert("Đã reset.")
   }
 
+  const QAForm = ({ onSubmit, onClose }) => {
+    const [questionText, setQuestionText] = useState("")
+
+    const handleSubmit = (e) => {
+      e.preventDefault()
+      onSubmit(questionText)
+    }
+
+    return (
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <textarea
+          value={questionText}
+          onChange={(e) => setQuestionText(e.target.value)}
+          placeholder="Nhập câu hỏi của bạn..."
+          className="w-full p-4 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <div className="flex justify-between">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 bg-white text-slate-700 rounded-xl font-semibold border border-slate-200 hover:bg-slate-50 transition-all duration-300"
+          >
+            Hủy bỏ
+          </button>
+          <button
+            type="submit"
+            className="px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+          >
+            Gửi câu hỏi
+          </button>
+        </div>
+      </form>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 text-foreground font-sans">
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/50 shadow-sm">
@@ -152,7 +254,7 @@ export default function KinhTeSoPresentation() {
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
                     section === item.key
                       ? "bg-blue-600 text-white shadow-lg"
-                      : "text-slate-700 hover:bg-white/50 hover:text-blue-600"
+                      : "text-slate-700 hover:bg-white/50 hover:text-indigo-600"
                   }`}
                 >
                   {item.label}
@@ -200,7 +302,7 @@ export default function KinhTeSoPresentation() {
                   <div className="flex flex-wrap gap-4">
                     <button
                       onClick={() => setSection("analysis")}
-                      className="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                      className="px-8 py-4 bg-blue-600 text-white rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 hover:bg-blue-700"
                     >
                       Khám phá phân tích
                     </button>
@@ -236,7 +338,7 @@ export default function KinhTeSoPresentation() {
                         { key: "quiz", label: "Quiz kiến thức", icon: "🧠", desc: "Kiểm tra hiểu biết" },
                         { key: "poll", label: "Bình chọn ý kiến", icon: "📊", desc: "Chia sẻ quan điểm" },
                         { key: "student", label: "Khảo sát sinh viên", icon: "👥", desc: "Dữ liệu thực tế" },
-                      ].map((item) => (
+                      ].map((item, index) => (
                         <button
                           key={item.key}
                           onClick={() => setSection(item.key)}
@@ -296,11 +398,11 @@ export default function KinhTeSoPresentation() {
                   thương mại điện tử, hệ thống logistics và fintech.
                 </p>
                 <div className="space-y-3">
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-center gap-3">
                     <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
                     <p className="text-slate-600">Thay đổi phương thức sản xuất và lưu thông hàng hóa</p>
                   </div>
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-center gap-3">
                     <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
                     <p className="text-slate-600">Xuất hiện các hình thức lao động mới (seller, shipper, developer)</p>
                   </div>
@@ -587,43 +689,76 @@ export default function KinhTeSoPresentation() {
 
               <div className="space-y-6">
                 {sampleQuiz.map((q, i) => (
-                  <div
-                    key={q.id}
-                    className="bg-gradient-to-r from-slate-50 to-purple-50 rounded-2xl p-6 border border-slate-200"
-                  >
-                    <div className="font-semibold text-lg text-slate-900 mb-4">
-                      <span className="inline-flex items-center justify-center w-8 h-8 bg-purple-100 text-purple-600 rounded-full text-sm font-bold mr-3">
-                        {i + 1}
-                      </span>
-                      {q.q}
-                    </div>
-                    <div className="grid gap-3">
-                      {q.options.map((op, oi) => (
-                        <label
-                          key={oi}
-                          className={`flex items-center gap-3 p-4 rounded-xl cursor-pointer transition-all duration-300 ${
-                            quizAnswers[q.id] === oi
-                              ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg"
-                              : "bg-white hover:bg-purple-50 border border-slate-200"
-                          }`}
-                        >
-                          <input
-                            type="radio"
-                            name={`q_${q.id}`}
-                            checked={quizAnswers[q.id] === oi}
-                            onChange={() => handleQuizSelect(q.id, oi)}
-                            className="sr-only"
-                          />
-                          <div
-                            className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                              quizAnswers[q.id] === oi ? "border-white" : "border-slate-300"
-                            }`}
+                  <div key={i}>
+                    <h4 className="font-semibold text-slate-900 mb-3">{q.q}</h4>
+                    <div className="space-y-3">
+                      {q.options.map((op, oi) => {
+                        const isSelected = quizAnswers[q.id] === oi
+                        const isCorrect = oi === q.answerIndex
+                        const isAnswered = answeredQuestions[q.id]
+                        const showFeedback = isAnswered && isSelected
+
+                        let optionClass = "bg-white hover:bg-purple-50 border border-slate-200"
+
+                        if (isSelected && !isAnswered) {
+                          optionClass = "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg"
+                        } else if (showFeedback) {
+                          if (isCorrect) {
+                            optionClass = "bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg"
+                          } else {
+                            optionClass = "bg-gradient-to-r from-red-500 to-pink-500 text-white shadow-lg"
+                          }
+                        } else if (isAnswered && isCorrect) {
+                          optionClass =
+                            "bg-gradient-to-r from-green-100 to-emerald-100 border-2 border-green-500 text-green-800"
+                        }
+
+                        return (
+                          <label
+                            key={oi}
+                            className={`flex items-center gap-3 p-4 rounded-xl cursor-pointer transition-all duration-300 ${optionClass}`}
                           >
-                            {quizAnswers[q.id] === oi && <div className="w-2 h-2 bg-white rounded-full"></div>}
-                          </div>
-                          <span className="font-medium">{op}</span>
-                        </label>
-                      ))}
+                            <input
+                              type="radio"
+                              name={`q_${q.id}`}
+                              checked={quizAnswers[q.id] === oi}
+                              onChange={() => handleQuizSelect(q.id, oi)}
+                              className="sr-only"
+                            />
+                            <div className="flex items-center gap-3 flex-1">
+                              <div
+                                className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                                  isSelected ? "border-white" : "border-slate-300"
+                                }`}
+                              >
+                                {isSelected && <div className="w-2 h-2 bg-white rounded-full"></div>}
+                              </div>
+                              <span className="font-medium flex-1">{op}</span>
+                              {showFeedback && (
+                                <div className="flex items-center gap-2">
+                                  {isCorrect ? (
+                                    <div className="flex items-center gap-1">
+                                      <span className="text-xl">✅</span>
+                                      <span className="text-sm font-bold">Đúng!</span>
+                                    </div>
+                                  ) : (
+                                    <div className="flex items-center gap-1">
+                                      <span className="text-xl">❌</span>
+                                      <span className="text-sm font-bold">Sai</span>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                              {isAnswered && isCorrect && !isSelected && (
+                                <div className="flex items-center gap-1">
+                                  <span className="text-xl">💡</span>
+                                  <span className="text-sm font-bold text-green-700">Đáp án đúng</span>
+                                </div>
+                              )}
+                            </div>
+                          </label>
+                        )
+                      })}
                     </div>
                   </div>
                 ))}
@@ -640,6 +775,7 @@ export default function KinhTeSoPresentation() {
                   onClick={() => {
                     setQuizAnswers({})
                     setQuizIndex(0)
+                    setAnsweredQuestions({})
                   }}
                   className="px-8 py-4 bg-white text-slate-700 rounded-2xl font-semibold border border-slate-200 hover:bg-slate-50 transition-all duration-300"
                 >
@@ -740,7 +876,7 @@ export default function KinhTeSoPresentation() {
                 ].map((item, index) => (
                   <div
                     key={index}
-                    className="bg-gradient-to-br from-slate-50 to-green-50 p-6 rounded-2xl border border-slate-200"
+                    className={`bg-gradient-to-br from-slate-50 to-green-50 p-6 rounded-2xl border border-slate-200`}
                   >
                     <div className="text-3xl mb-3">{item.icon}</div>
                     <h5 className="font-bold text-slate-900 mb-2">{item.title}</h5>
@@ -752,23 +888,25 @@ export default function KinhTeSoPresentation() {
           </section>
         )}
 
-        <footer className="mt-24 bg-gradient-to-r from-slate-900 to-blue-900 text-white">
+        <footer className="mt-24 bg-slate-900 text-white">
           <div className="max-w-7xl mx-auto px-6 py-12">
             <div className="text-center">
               <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl mx-auto mb-6 flex items-center justify-center">
                 <span className="text-white font-bold text-xl">KS</span>
               </div>
-              <h3 className="text-2xl font-bold mb-4">Kinh tế số — CSHT & KTTT</h3>
-              <p className="text-blue-200 mb-6 max-w-2xl mx-auto">
-                Website thuyết trình tương tác thay thế slide truyền thống • Nghiên cứu mối quan hệ biện chứng trong bối
-                cảnh số hóa
+              <h3 className="text-2xl font-bold mb-4 text-white">Kinh tế số — CSHT & KTTT</h3>
+              <p className="text-slate-200 mb-6 max-w-2xl mx-auto">
+                Nghiên cứu mối quan hệ biện chứng trong bối cảnh số hóa
               </p>
-              <div className="flex justify-center gap-4 text-sm text-blue-300">
-                <span>Team: [Tên nhóm]</span>
-                <span>•</span>
-                <span>Môn: Triết học Mác-Lênin</span>
-                <span>•</span>
-                <button onClick={() => setAiUsageOpen(true)} className="hover:text-white transition-colors underline">
+              <div className="flex justify-center gap-4 text-sm text-slate-300">
+                <span className="text-slate-300">Group 5</span>
+                <span className="text-slate-300">•</span>
+                <span className="text-slate-300">Môn: Triết học Mác-Lênin</span>
+                <span className="text-slate-300">•</span>
+                <button
+                  onClick={() => setAiUsageOpen(true)}
+                  className="hover:text-white transition-colors underline text-slate-300"
+                >
                   AI Usage Report
                 </button>
               </div>
@@ -788,7 +926,7 @@ export default function KinhTeSoPresentation() {
                   </div>
                   <div>
                     <h3 className="text-2xl font-bold text-slate-900">AI Usage Report</h3>
-                    <p className="text-slate-600">Báo cáo minh bạch về việc sử dụng AI</p>
+                    <p className="text-slate-600">Báo cáo minh bạch về việc sử dụng AI hỗ trợ học tập</p>
                   </div>
                 </div>
                 <button
@@ -857,13 +995,6 @@ export default function KinhTeSoPresentation() {
                     <strong> do sinh viên biên soạn & kiểm chứng</strong> hoàn toàn.
                   </p>
                 </div>
-
-                <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200">
-                  <p className="text-sm text-slate-500 italic text-center">
-                    📝 Ghi chú: Nhóm cần điền đầy đủ tool names, prompts, outputs và links tới nguồn chính thống trước
-                    khi nộp bài.
-                  </p>
-                </div>
               </div>
             </div>
           </div>
@@ -889,51 +1020,5 @@ export default function KinhTeSoPresentation() {
         </div>
       )}
     </div>
-  )
-}
-
-function QAForm({ onSubmit, onClose }) {
-  const [question, setQuestion] = useState("")
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    if (question.trim()) {
-      onSubmit(question.trim())
-      setQuestion("")
-    }
-  }
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div>
-        <label htmlFor="question" className="block text-sm font-medium text-slate-700 mb-2">
-          Câu hỏi của bạn
-        </label>
-        <textarea
-          id="question"
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-          placeholder="Nhập câu hỏi bạn muốn đặt cho nhóm thuyết trình..."
-          className="w-full px-4 py-3 border border-slate-300 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-          rows={4}
-          required
-        />
-      </div>
-      <div className="flex gap-3 justify-end">
-        <button
-          type="button"
-          onClick={onClose}
-          className="px-6 py-3 text-slate-600 hover:text-slate-800 transition-colors"
-        >
-          Hủy
-        </button>
-        <button
-          type="submit"
-          className="px-8 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-        >
-          Gửi câu hỏi
-        </button>
-      </div>
-    </form>
   )
 }
